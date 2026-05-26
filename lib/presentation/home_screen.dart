@@ -247,9 +247,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildHeroCarousel(List<Media> featured) {
     return PageView.builder(
       controller: _heroController,
-      itemCount: featured.length,
       itemBuilder: (context, index) {
-        final media = featured[index];
+        if (featured.isEmpty) return const SizedBox();
+        final media = featured[index % featured.length];
         return AnimatedBuilder(
           animation: _heroController,
           builder: (context, child) {
@@ -267,7 +267,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             );
           },
           child: GestureDetector(
-            onTap: () => context.push('/details', extra: media),
+            onTap: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+              context.push('/details', extra: media);
+            },
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 8.0),
               decoration: BoxDecoration(
@@ -347,7 +350,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildPosterCard(Media media, BuildContext context) {
     return GestureDetector(
-      onTap: () => context.push('/details', extra: media),
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+        context.push('/details', extra: media);
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -404,6 +410,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       builder: (context) {
         Future.delayed(const Duration(seconds: 2), () {
           Navigator.of(context).pop(); 
+          FocusManager.instance.primaryFocus?.unfocus();
           context.push('/details', extra: randomItem);
         });
         return Center(

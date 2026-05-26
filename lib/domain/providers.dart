@@ -9,7 +9,9 @@ final mediaListProvider = FutureProvider<List<Media>>((ref) async {
   // Yield to the event loop so the UI can draw the first frame (Loading spinner)
   await Future.delayed(const Duration(milliseconds: 100));
   await db.syncWithSeed(); 
-  return db.getAllMedia();
+  final list = await db.getAllMedia();
+  list.shuffle();
+  return list;
 });
 
 final watchlistProvider = FutureProvider<List<Media>>((ref) async {
